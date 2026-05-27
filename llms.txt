@@ -1,0 +1,39 @@
+# North Harbor Digital
+
+> Websites, hosting, and managed social media for service businesses on the East Coast. Built and supported by real people who answer the phone — no chatbots, no tickets, no overseas call centers.
+
+North Harbor Digital builds and maintains websites for plumbers, contractors, salons, and other local service businesses. Pricing is flat and transparent. Based in Levittown, New York.
+
+## Contact
+- Email: rightnow@rocketship.com
+- Phone: 516.907.7001
+- Location: Levittown, New York
+- Service area: East Coast United States
+
+## Services and pricing
+
+- **Custom Website Design** — $799 one-time. Mobile-responsive, basic SEO, booking/contact form. https://northharbordigital.com/services.html
+- **Professional Web Hosting** — $299/month. SSL, daily backups, uptime monitoring, email + phone support. https://northharbordigital.com/hosting.html
+- **Social Media Management** — $149/month. Four posts per month across Facebook, Instagram, and Google Business; captions written in your voice; engagement monitoring during business hours; scale up to 8/12/16 posts. https://northharbordigital.com/social.html
+
+## Pages
+
+- [Home](https://northharbordigital.com/): Overview, services, pricing, contact.
+- [Services](https://northharbordigital.com/services.html): Detailed service descriptions and full pricing table.
+- [Hosting](https://northharbordigital.com/hosting.html): Hosting features, uptime, support model.
+- [Social Media](https://northharbordigital.com/social.html): Social media offering, posting cadence, voice.
+
+## Who we serve
+
+Plumbers, electricians, HVAC, general contractors, roofers, landscapers, hair and nail salons, auto detailers, and other owner-operated service businesses that need a professional online presence without managing it themselves.
+
+## What makes us different
+
+- Flat pricing. No surprise invoices.
+- Real human support. Phone calls answered by a person, usually within an hour.
+- Fully managed. We handle hosting, updates, plugins, and SSL — owners focus on their work.
+- No long-term contracts on hosting or social.
+
+## Demo
+
+A live demo site for a service business is available at https://handyman-demo-site.com/
