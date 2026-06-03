@@ -594,6 +594,20 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center;
   justify-content: space-between;
 }
+.mobile-drawer-group { display: flex; flex-direction: column; }
+.mobile-drawer-label {
+  padding: .75rem .5rem .25rem;
+  font-family: ui-monospace, "Courier New", Courier, monospace;
+  font-size: var(--text-tiny);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+.mobile-drawer-group a {
+  padding-left: 1.25rem;
+  border-bottom: none;
+}
+.mobile-drawer-group a:last-child { border-bottom: 1px solid var(--border); }
 
 /* ========== Hero (Scheme 4) ========== */
 .hero { text-align: center; }

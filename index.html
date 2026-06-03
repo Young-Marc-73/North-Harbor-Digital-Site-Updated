@@ -168,7 +168,43 @@
         <a class="nav-link" href="index.html">Home</a>
         <a class="nav-link" href="services.html">Services</a>
         <a class="nav-link" href="#pricing">Pricing</a>
-        <a class="nav-link" href="https://handyman-demo-site.com/" target="_blank" rel="noopener">Demo</a>
+        <div class="nav-dropdown" data-dropdown>
+          <button class="nav-link" data-dropdown-trigger aria-expanded="false" aria-haspopup="true">
+            Demo
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <a class="nav-dropdown-item" role="menuitem" href="https://handyman-demo-site.com" target="_blank" rel="noopener">
+              <svg class="dd-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color:#2D6CDF">
+                <circle cx="12" cy="12" r="7" fill="currentColor"/>
+              </svg>
+              <div>
+                <div class="dd-title">Demo Science Blue</div>
+                <div class="dd-desc">Clean, trust-building handyman site</div>
+              </div>
+            </a>
+            <a class="nav-dropdown-item" role="menuitem" href="https://aquamarine-cheesecake-2bc457.netlify.app" target="_blank" rel="noopener">
+              <svg class="dd-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color:#1F9D55">
+                <circle cx="12" cy="12" r="7" fill="currentColor"/>
+              </svg>
+              <div>
+                <div class="dd-title">Demo Workwear Green</div>
+                <div class="dd-desc">Bold, rugged trades layout</div>
+              </div>
+            </a>
+            <a class="nav-dropdown-item" role="menuitem" href="https://neon-kringle-43552b.netlify.app/" target="_blank" rel="noopener">
+              <svg class="dd-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color:#E8742C">
+                <circle cx="12" cy="12" r="7" fill="currentColor"/>
+              </svg>
+              <div>
+                <div class="dd-title">Demo Safety Orange</div>
+                <div class="dd-desc">High-visibility, conversion-focused</div>
+              </div>
+            </a>
+          </div>
+        </div>
 
         <div class="nav-dropdown" data-dropdown>
           <button class="nav-link" data-dropdown-trigger aria-expanded="false" aria-haspopup="true">
@@ -233,7 +269,12 @@
     <a href="index.html">Home</a>
     <a href="services.html">Services</a>
     <a href="#pricing">Pricing</a>
-    <a href="https://handyman-demo-site.com/" target="_blank" rel="noopener">Demo</a>
+    <div class="mobile-drawer-group">
+      <span class="mobile-drawer-label">Demo</span>
+      <a href="https://handyman-demo-site.com" target="_blank" rel="noopener">Demo Science Blue</a>
+      <a href="https://aquamarine-cheesecake-2bc457.netlify.app" target="_blank" rel="noopener">Demo Workwear Green</a>
+      <a href="https://neon-kringle-43552b.netlify.app/" target="_blank" rel="noopener">Demo Safety Orange</a>
+    </div>
     <a href="hosting.html">Hosting</a>
     <a href="social.html">Social Media</a>
     <a href="#contact">Contact</a>
@@ -311,7 +352,7 @@
           <h3>Real people answer the phone</h3>
           <p>No tickets, no chatbots. When something needs fixing you call us and a person picks up — usually within an hour.</p>
         </div>
-        <figure class="service-photo aspect-video"><img src="assets/real-people-phone.jpg" alt="Person holding a phone with connected service icons floating around it" /></figure>
+        <figure class="service-photo aspect-video"><img src="assets/real-people-phone-web.jpg" alt="Person holding a phone with connected service icons floating around it" /></figure>
       </article>
     </div>
   </div>
@@ -430,7 +471,7 @@
       </article>
 
       <article class="card service-card wide">
-        <figure class="service-photo"><img src="assets/social-content.jpg" alt="Phone showing social media apps including Instagram, TikTok, X, LinkedIn, and YouTube" /></figure>
+        <figure class="service-photo"><img src="assets/social-content-web.jpg" alt="Phone showing social media apps including Instagram, TikTok, X, LinkedIn, and YouTube" /></figure>
         <div class="service-body">
           <div class="service-eyebrow">Social media · $699/mo</div>
           <h3>We post, you focus on the work.</h3>
@@ -524,7 +565,7 @@
       <a class="btn secondary" href="#services">See pricing</a>
     </div>
 
-    <figure class="service-photo aspect-video" style="max-width:1100px; margin-inline:auto;"><img src="assets/cta-team.jpg" alt="Two people collaborating at a table with a laptop and materials" /></figure>
+    <figure class="service-photo aspect-video" style="max-width:1100px; margin-inline:auto;"><img src="assets/real-people-hosting.jpg" alt="Two people collaborating at a table with a laptop and materials" /></figure>
   </div>
 </section>
 
@@ -548,7 +589,7 @@
           </svg>
           <h3>Email</h3>
           <p>Send us a message anytime.</p>
-          <a href="mailto:rightnow@rocketship.com">rightnow@rocketship.com</a>
+          <a href="/cdn-cgi/l/email-protection#3b49525c534f55544c7b495458505e4f4853524b15585456"><span class="__cf_email__" data-cfemail="77051e101f03191800370518141c1203041f1e075914181a">[email&#160;protected]</span></a>
         </div>
 
         <div class="contact-info-item">
@@ -767,12 +808,12 @@
 </div>
 
 <!-- Tweak defaults persisted on disk -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "heroScheme": "8",
   "palette": "default",
   "density": "default",
-  "typePair": "modern",
+  "typePair": "default",
   "pricingEmph": "none"
 }/*EDITMODE-END*/;
 </script>
