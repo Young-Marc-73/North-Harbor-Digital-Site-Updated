@@ -12,16 +12,16 @@ North Harbor Digital builds and maintains websites for plumbers, contractors, sa
 
 ## Services and pricing
 
-- **Custom Website Design** — $799 one-time. Mobile-responsive, basic SEO, booking/contact form. https://northharbordigital.com/services.html
-- **Professional Web Hosting** — $299/month. SSL, daily backups, uptime monitoring, email + phone support. https://northharbordigital.com/hosting.html
-- **Social Media Management** — $149/month. Four posts per month across Facebook, Instagram, and Google Business; captions written in your voice; engagement monitoring during business hours; scale up to 8/12/16 posts. https://northharbordigital.com/social.html
+- **Custom Website Design** — $799 one-time. Mobile-responsive, basic SEO, booking/contact form. https://northharbordigital.net/services.html
+- **Professional Web Hosting** — $299/month. SSL, daily backups, uptime monitoring, email + phone support. https://northharbordigital.net/hosting.html
+- **Social Media Management** — $149/month. Four posts per month across Facebook, Instagram, and Google Business; captions written in your voice; engagement monitoring during business hours; scale up to 8/12/16 posts. https://northharbordigital.net/social.html
 
 ## Pages
 
-- [Home](https://northharbordigital.com/): Overview, services, pricing, contact.
-- [Services](https://northharbordigital.com/services.html): Detailed service descriptions and full pricing table.
-- [Hosting](https://northharbordigital.com/hosting.html): Hosting features, uptime, support model.
-- [Social Media](https://northharbordigital.com/social.html): Social media offering, posting cadence, voice.
+- [Home](https://northharbordigital.net/): Overview, services, pricing, contact.
+- [Services](https://northharbordigital.net/services.html): Detailed service descriptions and full pricing table.
+- [Hosting](https://northharbordigital.net/hosting.html): Hosting features, uptime, support model.
+- [Social Media](https://northharbordigital.net/social.html): Social media offering, posting cadence, voice.
 
 ## Who we serve
 
