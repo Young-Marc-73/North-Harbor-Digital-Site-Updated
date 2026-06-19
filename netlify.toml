@@ -44,6 +44,11 @@
   to = "/social.html"
   status = 200
 
+[[redirects]]
+  from = "/checklist"
+  to = "/checklist.html"
+  status = 200
+
 # Catch-all 404 — explicitly serve 404.html for any unmatched path
 [[redirects]]
   from = "/*"
