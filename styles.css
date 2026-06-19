@@ -573,7 +573,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (min-width: 992px) { .nav-mobile-cta { display: none; } }
 
 .nav-desktop-cta { display: none; }
-@media (min-width: 992px) { .nav-desktop-cta { display: inline-flex; } }
+@media (min-width: 992px) { .nav-desktop-cta { display: inline-flex; gap: .5rem; align-items: center; } }
 
 .mobile-drawer {
   display: none;
