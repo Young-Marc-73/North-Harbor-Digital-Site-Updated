@@ -128,7 +128,7 @@
         }
       }).catch(() => {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
-        alert("Sorry — something went wrong sending your message. Please email rightnow@rocketship.com or call 516.907.7001 instead.");
+        alert("Sorry — something went wrong sending your message. Please email marc@northharbordigital.net or call 516.907.7001 instead.");
       });
     });
   }
