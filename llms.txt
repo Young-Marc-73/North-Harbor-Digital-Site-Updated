@@ -36,4 +36,4 @@ Plumbers, electricians, HVAC, general contractors, roofers, landscapers, hair an
 
 ## Demo
 
-A live demo site for a service business is available at https://handyman-demo-site.com/
+A live demo site for a service business is available at https://inspiring-cassata-19928f.netlify.app/
