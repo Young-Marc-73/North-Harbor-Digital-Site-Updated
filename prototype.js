@@ -272,3 +272,228 @@
   });
 
 })();
+
+
+/* ============================================================
+   NORTH HARBOR DIGITAL — Site-wide FAQ Chatbot
+   Self-contained: injects its own CSS + HTML, then runs.
+   DEPLOY: paste this whole block at the END of prototype.js
+   (loads on every page automatically). No other edits needed.
+   Branded navy #11284C / accent blue #3A86FF.
+   ============================================================ */
+(function(){
+  if (document.getElementById('chatLauncher')) return; // avoid double-inject
+
+  // ---- 1. Inject styles ----
+  var css = `
+  :root{--chat-primary:#11284C;--chat-primary-dark:#0B1C38;--chat-accent:#3A86FF;--chat-dark:#1e293b;--chat-light:#f5f7fb;--chat-radius:16px;--chat-shadow:0 12px 48px rgba(0,0,0,.18);}
+  .nhd-chat-launcher{position:fixed;bottom:24px;right:24px;z-index:99998;width:60px;height:60px;border-radius:50%;background:var(--chat-primary);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;transition:transform .2s;font-family:inherit}
+  .nhd-chat-launcher:hover{transform:scale(1.08)}
+  .nhd-chat-launcher svg{width:28px;height:28px;fill:currentColor}
+  .nhd-chat-launcher .nhd-chat-launcher__close{display:none}
+  .nhd-chat-launcher.open .nhd-chat-launcher__open{display:none}
+  .nhd-chat-launcher.open .nhd-chat-launcher__close{display:block}
+  .nhd-chat-launcher__badge{position:absolute;top:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:#3A86FF;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+  .nhd-chat-launcher.open .nhd-chat-launcher__badge{display:none}
+  .nhd-chat-window{position:fixed;bottom:96px;right:24px;z-index:99999;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);background:#fff;border-radius:var(--chat-radius);box-shadow:var(--chat-shadow);display:none;flex-direction:column;overflow:hidden;font-family:inherit}
+  .nhd-chat-window.open{display:flex}
+  .nhd-chat__header{background:var(--chat-primary);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .nhd-chat__header-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.3);flex-shrink:0}
+  .nhd-chat__header-info{flex:1}
+  .nhd-chat__header-name{font-weight:700;font-size:15px}
+  .nhd-chat__header-status{font-size:12px;opacity:.85;display:flex;align-items:center;gap:4px}
+  .nhd-chat__header-status::before{content:'';width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block}
+  .nhd-chat__messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--chat-light)}
+  .nhd-chat__messages::-webkit-scrollbar{width:4px}
+  .nhd-chat__messages::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+  .nhd-chat__bubble{max-width:85%;padding:10px 14px;font-size:14px;line-height:1.5;word-wrap:break-word;animation:chatFadeIn .25s ease}
+  @keyframes chatFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .nhd-chat__bubble--bot{background:#fff;color:var(--chat-dark);border-radius:4px 16px 16px 16px;align-self:flex-start;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .nhd-chat__bubble--user{background:var(--chat-primary);color:#fff;border-radius:16px 4px 16px 16px;align-self:flex-end}
+  .nhd-chat__bubble--bot a{color:var(--chat-accent);font-weight:600;text-decoration:none}
+  .nhd-chat__bubble--bot a:hover{text-decoration:underline}
+  .nhd-chat__options{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-end;animation:chatFadeIn .3s ease;max-width:90%;justify-content:flex-end}
+  .nhd-chat__option-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--chat-primary);background:#fff;color:var(--chat-primary);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+  .nhd-chat__option-btn:hover{background:var(--chat-primary);color:#fff}
+  .nhd-chat__typing{display:flex;gap:4px;align-self:flex-start;padding:12px 16px;background:#fff;border-radius:4px 16px 16px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .nhd-chat__typing span{width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:typingDot 1.2s infinite}
+  .nhd-chat__typing span:nth-child(2){animation-delay:.2s}
+  .nhd-chat__typing span:nth-child(3){animation-delay:.4s}
+  @keyframes typingDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+  .nhd-chat__input-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+  .nhd-chat__input{flex:1;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:24px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;color:var(--chat-dark)}
+  .nhd-chat__input:focus{border-color:var(--chat-primary)}
+  .nhd-chat__input::placeholder{color:#94a3b8}
+  .nhd-chat__send{width:38px;height:38px;border-radius:50%;background:var(--chat-primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+  .nhd-chat__send:hover{background:var(--chat-primary-dark)}
+  .nhd-chat__send svg{width:18px;height:18px;fill:#fff}
+  @media(max-width:440px){.nhd-chat-window{bottom:0;right:0;width:100%;height:100%;max-height:100vh;border-radius:0}.nhd-chat-launcher{bottom:16px;right:16px}}
+  `;
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  // ---- 2. Inject HTML ----
+  var html = `
+  <button class="nhd-chat-launcher" id="chatLauncher" aria-label="Chat with us">
+    <span class="nhd-chat-launcher__badge">1</span>
+    <svg class="nhd-chat-launcher__open" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+    <svg class="nhd-chat-launcher__close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  </button>
+  <div class="nhd-chat-window" id="chatWindow">
+    <div class="nhd-chat__header">
+      <img class="nhd-chat__header-avatar" src="https://ui-avatars.com/api/?name=North+Harbor&background=11284C&color=fff&size=80" alt="">
+      <div class="nhd-chat__header-info">
+        <div class="nhd-chat__header-name">North Harbor Digital</div>
+        <div class="nhd-chat__header-status">Usually replies instantly</div>
+      </div>
+    </div>
+    <div class="nhd-chat__messages" id="chatMessages"></div>
+    <div class="nhd-chat__input-bar">
+      <input class="nhd-chat__input" id="chatInput" type="text" placeholder="Type a message…" autocomplete="off">
+      <button class="nhd-chat__send" id="chatSend" aria-label="Send">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>`;
+  var wrap = document.createElement('div'); wrap.innerHTML = html;
+  while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+
+  // ---- 3. NHD knowledge base ----
+  var BIZ = {
+    name:"North Harbor Digital",
+    phone:"(516) 907-7001", phoneTel:"5169077001",
+    email:"marc@northharbordigital.net",
+    hours:"Mon–Fri, 9 AM – 6 PM ET",
+    area:"Long Island & the NY metro — and remote for clients nationwide"
+  };
+  var QA = [
+    {keys:["price","cost","how much","rate","pricing","fee","expensive","cheap","afford"],
+     answer:"Simple, flat pricing — no surprises:<br>🌐 <strong>Website — $799</strong> one-time<br>🔧 <strong>Hosting & maintenance — $249/mo</strong><br>📣 <strong>Social media — $149/mo</strong> (4 posts)<br>📍 <strong>Google Launch — $299</strong> (get found on Maps)<br>📈 <strong>Google Management — $129/mo</strong>",
+     followUp:["Start a project","What's included?","Call us"]},
+    {keys:["what do you do","services","offer","help with","build","website","web design","do you"],
+     answer:"We build fast, simple websites for local service businesses — handymen, plumbers, contractors, restaurants — and get you found on Google. No website or just a Facebook page? That's exactly who we help. 🚀",
+     followUp:["Pricing","How long does it take?","Start a project"]},
+    {keys:["how long","timeline","fast","turnaround","when","quick","ready"],
+     answer:"Most sites go from kickoff to launch in a matter of days, not months. We keep it simple so your phone starts ringing fast.",
+     followUp:["Pricing","Start a project"]},
+    {keys:["google","maps","seo","found","search","ranking","listing"],
+     answer:"Getting you on Google Maps and local search is one of our specialties. We set up and optimize your Google Business Profile so customers searching '[your service] near me' actually find you. 📍",
+     followUp:["Pricing","Start a project","Call us"]},
+    {keys:["host","hosting","maintenance","update","secure","speed"],
+     answer:"Our $249/mo hosting keeps your site fast, secure, and updated — so you never have to think about it. It's optional; the website stands on its own.",
+     followUp:["Pricing","Start a project"]},
+    {keys:["social","facebook","instagram","posts","marketing"],
+     answer:"For $149/mo we handle your social media — four professional posts a month, done for you, so you stay visible without lifting a finger.",
+     followUp:["Pricing","Start a project"]},
+    {keys:["area","location","where","serve","cover","near","local"],
+     answer:"We're based on Long Island and serve the NY metro in person, plus clients <strong>nationwide</strong> remotely. Wherever you are, we can help.",
+     followUp:["Pricing","Start a project"]},
+    {keys:["call","phone","talk","speak","reach","contact","email","text"],
+     answer:"Let's talk!<br>📞 Call: <a href='tel:"+BIZ.phoneTel+"'>"+BIZ.phone+"</a><br>💬 Text: <a href='sms:"+BIZ.phoneTel+"'>"+BIZ.phone+"</a><br>📧 Email: <a href='mailto:"+BIZ.email+"'>"+BIZ.email+"</a>",
+     followUp:["Start a project","Pricing"]},
+    {keys:["start","quote","sign up","get going","begin","interested","hire","project"],
+     answer:"Awesome! 🎉 The fastest way to start is a quick call — we'll learn about your business and map out your site.<br><br>📞 <a href='tel:"+BIZ.phoneTel+"'>"+BIZ.phone+"</a> or reply here and we'll reach out.",
+     followUp:["Pricing","Call us"]},
+    {keys:["included","what's included","comes with","get for"],
+     answer:"Your $799 site includes a complete, mobile-first website — built, written, and launched. Hosting, social, and Google services are optional monthly add-ons. You own your site.",
+     followUp:["Pricing","Start a project"]},
+    {keys:["thank","thanks","thx","great","perfect","awesome"],
+     answer:"You're welcome! 😊 Anything else I can help with?",
+     followUp:["Pricing","Start a project","No, I'm good!"]},
+    {keys:["bye","goodbye","that's all","i'm good","all set","no thanks","nope"],
+     answer:"Thanks for stopping by! We're a call away at <a href='tel:"+BIZ.phoneTel+"'>"+BIZ.phone+"</a>. 👋",
+     followUp:[]}
+  ];
+  var QUICK = {
+    "Start a project":"I'd like to start a project","Pricing":"What's your pricing?",
+    "What's included?":"What's included?","How long does it take?":"How long does it take?",
+    "Call us":"__call","No, I'm good!":"I'm all set, thanks!"
+  };
+
+  // ---- 4. Engine ----
+  var msgArea=document.getElementById('chatMessages'),input=document.getElementById('chatInput'),
+      sendBtn=document.getElementById('chatSend'),launcher=document.getElementById('chatLauncher'),
+      chatWin=document.getElementById('chatWindow'),isOpen=false,greeted=false;
+  function addBubble(t,w){var d=document.createElement('div');d.className='nhd-chat__bubble nhd-chat__bubble--'+w;d.innerHTML=t;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;}
+  function addOptions(o){if(!o||!o.length)return;var wr=document.createElement('div');wr.className='nhd-chat__options';o.forEach(function(l){var b=document.createElement('button');b.className='nhd-chat__option-btn';b.textContent=l;b.addEventListener('click',function(){msgArea.querySelectorAll('.nhd-chat__options').forEach(function(x){x.remove()});handleQuick(l);});wr.appendChild(b);});msgArea.appendChild(wr);msgArea.scrollTop=msgArea.scrollHeight;}
+  function showTyping(){var t=document.createElement('div');t.className='nhd-chat__typing';t.id='typingIndicator';t.innerHTML='<span></span><span></span><span></span>';msgArea.appendChild(t);msgArea.scrollTop=msgArea.scrollHeight;}
+  function hideTyping(){var t=document.getElementById('typingIndicator');if(t)t.remove();}
+  function botReply(t,o){showTyping();var d=Math.min(400+t.length*8,1800);setTimeout(function(){hideTyping();addBubble(t,'bot');if(o&&o.length)addOptions(o);},d);}
+  function findAnswer(x){var l=x.toLowerCase();for(var i=0;i<QA.length;i++)for(var k=0;k<QA[i].keys.length;k++)if(l.indexOf(QA[i].keys[k])!==-1)return QA[i];return null;}
+  function handleUser(t){addBubble(t,'user');var m=findAnswer(t);if(m){botReply(m.answer,m.followUp);}else{botReply("Great question! For anything specific it's best to reach Marc directly:<br><br>📞 <a href='tel:"+BIZ.phoneTel+"'>"+BIZ.phone+"</a><br>📧 <a href='mailto:"+BIZ.email+"'>"+BIZ.email+"</a><br><br>Or I can help with these:",["Pricing","Services","How long does it take?","Start a project"]);}}
+  function handleQuick(l){var a=QUICK[l]||l;if(a==='__call'){window.open('tel:'+BIZ.phoneTel,'_self');return;}handleUser(a);}
+  function greet(){if(greeted)return;greeted=true;setTimeout(function(){addBubble("Hi there! 👋 I'm the North Harbor Digital assistant. Looking to get your business online or found on Google? I can help.",'bot');addOptions(["Pricing","Services","How long does it take?","Start a project"]);},400);}
+  launcher.addEventListener('click',function(){isOpen=!isOpen;chatWin.classList.toggle('open',isOpen);launcher.classList.toggle('open',isOpen);if(isOpen){greet();setTimeout(function(){input.focus()},300);}});
+  sendBtn.addEventListener('click',function(){var t=input.value.trim();if(!t)return;input.value='';msgArea.querySelectorAll('.nhd-chat__options').forEach(function(x){x.remove()});handleUser(t);});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')sendBtn.click();});
+})();
+
+
+/* ============================================================
+   NORTH HARBOR DIGITAL — Meta (Facebook) Pixel + Cookie Consent
+   Dataset / Pixel ID: 1044885861222091
+   Self-contained: injects cookie banner + styles, and only loads
+   the Meta Pixel AFTER the visitor accepts (GDPR/CCPA-friendly).
+   DEPLOY: paste this whole block at the END of prototype.js
+   (right after the chatbot block is fine). Loads on every page.
+   ============================================================ */
+(function(){
+  var PIXEL_ID = "1044885861222091";
+  var KEY = "nhd_cookie_consent"; // "granted" | "denied"
+
+  // ---- Load the Meta Pixel (only called on consent) ----
+  function loadPixel(){
+    if (window.fbq) return;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
+  }
+
+  // If the visitor already accepted earlier, load immediately and skip the banner.
+  try { if (localStorage.getItem(KEY) === "granted") { loadPixel(); return; }
+        if (localStorage.getItem(KEY) === "denied") { return; } } catch(e){}
+
+  // ---- Inject banner styles ----
+  var css = `
+  .nhd-cookie{position:fixed;left:16px;right:16px;bottom:16px;z-index:99997;max-width:760px;margin:0 auto;
+    background:#11284C;color:#e7eef7;border:1px solid #1c3d70;border-radius:12px;
+    box-shadow:0 12px 40px rgba(0,0,0,.28);padding:16px 20px;display:flex;gap:16px;align-items:center;
+    flex-wrap:wrap;font-family:inherit;font-size:14px;line-height:1.5}
+  .nhd-cookie__text{flex:1;min-width:240px}
+  .nhd-cookie__text a{color:#9fc0ff;text-decoration:underline}
+  .nhd-cookie__buttons{display:flex;gap:8px;flex-shrink:0}
+  .nhd-cookie__btn{padding:9px 18px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;
+    border:none;font-family:inherit;transition:opacity .15s}
+  .nhd-cookie__btn:hover{opacity:.9}
+  .nhd-cookie__btn--accept{background:#3A86FF;color:#fff}
+  .nhd-cookie__btn--decline{background:transparent;color:#cdd9ee;border:1px solid #3a567f}
+  @media(max-width:520px){.nhd-cookie{flex-direction:column;align-items:stretch}.nhd-cookie__buttons{justify-content:flex-end}}
+  `;
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  // ---- Inject banner HTML ----
+  var bar = document.createElement('div');
+  bar.className = 'nhd-cookie';
+  bar.id = 'cookieBanner';
+  bar.innerHTML = ''
+    + '<div class="nhd-cookie__text">We use cookies to improve your experience and measure our marketing. '
+    + 'See our <a href="/privacy">Privacy Policy</a>.</div>'
+    + '<div class="nhd-cookie__buttons">'
+    + '<button class="nhd-cookie__btn nhd-cookie__btn--decline" id="cookieDecline">Decline</button>'
+    + '<button class="nhd-cookie__btn nhd-cookie__btn--accept" id="cookieAccept">Accept</button>'
+    + '</div>';
+  document.body.appendChild(bar);
+
+  function close(){ bar.style.display = 'none'; }
+  document.getElementById('cookieAccept').addEventListener('click', function(){
+    try{ localStorage.setItem(KEY,'granted'); }catch(e){}
+    loadPixel(); close();
+  });
+  document.getElementById('cookieDecline').addEventListener('click', function(){
+    try{ localStorage.setItem(KEY,'denied'); }catch(e){}
+    close();
+  });
+})();
