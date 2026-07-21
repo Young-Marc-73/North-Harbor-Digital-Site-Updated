@@ -1393,3 +1393,139 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--accent, currentColor);
 }
 .status-page .status-actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem; }
+
+/* =========================================================
+   ENHANCEMENTS LAYER — North Harbor Digital motion + polish
+   Appended, non-destructive. Every animation degrades to a
+   static, fully-visible state without JS or with reduced motion.
+   ========================================================= */
+:root {
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --nhd-accent: var(--color-dodger-blue);
+  --shadow-sm: 0 2px 8px rgba(17,40,76,.08);
+  --shadow-md: 0 12px 30px -10px rgba(17,40,76,.20);
+  --shadow-lg: 0 24px 54px -18px rgba(17,40,76,.30);
+}
+
+/* — Accessible focus ring — */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-dodger-blue);
+  outline-offset: 2px; border-radius: 3px;
+}
+
+/* — Navbar: condense on scroll — */
+.navbar { transition: box-shadow .3s ease, background-color .3s ease, backdrop-filter .3s ease; }
+.nav-inner { transition: min-height .3s var(--ease-out); }
+.navbar.is-scrolled { box-shadow: var(--shadow-md); background: color-mix(in srgb, var(--bg) 97%, transparent); }
+.navbar.is-scrolled .nav-inner { min-height: 60px; }
+
+/* — Buttons + cards: micro-interactions — */
+.btn { transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s var(--ease-out), box-shadow .25s var(--ease-out); }
+.btn:not(.link):hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn:active { transform: translateY(0); }
+.btn.link .chev { transition: transform .2s ease; }
+.btn.link:hover .chev { transform: translateX(3px); }
+.card { transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out); }
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* — Hero entrance (above the fold; runs on load) — */
+.js-enhanced .hero h1 { animation: nhdRise .8s var(--ease-out) both; }
+.js-enhanced .hero .sub { animation: nhdRise .8s var(--ease-out) .12s both; }
+.js-enhanced .hero .actions { animation: nhdRise .8s var(--ease-out) .24s both; }
+.js-enhanced .hero-visual { animation: nhdRise .9s var(--ease-out) .36s both; }
+@keyframes nhdRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+/* Hero wireframe "builds itself" */
+.js-enhanced .hero-visual :is(.bb-bar, .bb-cta, .bb-img-block) { opacity: 0; animation: nhdBuild .5s var(--ease-out) forwards; }
+.js-enhanced .hero-visual .bb-bar:nth-child(1) { animation-delay: .6s; }
+.js-enhanced .hero-visual .bb-bar:nth-child(2) { animation-delay: .68s; }
+.js-enhanced .hero-visual .bb-bar:nth-child(3) { animation-delay: .76s; }
+.js-enhanced .hero-visual .bb-bar:nth-child(4) { animation-delay: .84s; }
+.js-enhanced .hero-visual .bb-cta { animation-delay: .95s; }
+.js-enhanced .hero-visual .bb-img-block { animation-delay: .7s; }
+@keyframes nhdBuild { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* — Blueprint art: "draws itself" via a left-to-right wipe + scan line — */
+.js-enhanced .bp-art { position: relative; }
+.js-enhanced .bp-art svg { clip-path: inset(0 100% 0 0); transition: clip-path 1.15s var(--ease-out); }
+.js-enhanced .bp-art.art-drawn svg { clip-path: inset(0 0 0 0); }
+.js-enhanced .bp-art::after {
+  content: ""; position: absolute; top: 4%; bottom: 4%; left: 0; width: 2px;
+  background: var(--color-dodger-blue); box-shadow: 0 0 14px 1px var(--color-dodger-blue);
+  opacity: 0; pointer-events: none;
+}
+.js-enhanced .bp-art.art-drawn::after { animation: nhdScan 1.15s var(--ease-out) forwards; }
+@keyframes nhdScan { 0% { opacity: .9; left: 0; } 88% { opacity: .9; } 100% { opacity: 0; left: 100%; } }
+
+/* — Scroll reveal (JS adds .reveal to targets, then .reveal--in) — */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); will-change: opacity, transform; }
+.reveal.reveal--in { opacity: 1; transform: none; }
+
+/* — Count-up numbers — */
+.countup, .stat-num { font-variant-numeric: tabular-nums; }
+
+/* =========================================================
+   Our Work — client demo gallery (blueprint browser cards)
+   ========================================================= */
+.work-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 3rem; }
+@media (min-width: 700px)  { .work-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .work-grid { grid-template-columns: repeat(3, 1fr); } }
+.work-card {
+  display: flex; flex-direction: column; overflow: hidden;
+  text-decoration: none; color: inherit;
+  border: 1px solid var(--border, rgba(17,40,76,.14));
+  border-radius: 14px; background: var(--color-white);
+}
+.work-card .bp-art {
+  padding: 1.1rem 1.1rem 0; aspect-ratio: 16/10; color: var(--wc, var(--color-dodger-blue));
+  background: color-mix(in srgb, var(--wc, var(--color-dodger-blue)) 6%, var(--color-white));
+}
+.work-card--blue   { --wc: #0a66c2; }
+.work-card--green  { --wc: #1faa59; }
+.work-card--orange { --wc: #ff6b35; }
+.work-body { padding: 1.25rem 1.35rem 1.4rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+.work-eyebrow { font-size: .8rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--wc, var(--color-dodger-blue)); }
+.work-body h3 { margin: 0; }
+.work-body p { color: var(--color-neutral-dark); margin: 0; flex: 1; }
+.work-link { margin-top: .6rem; display: inline-flex; align-items: center; gap: .35rem; font-weight: 600; color: var(--wc, var(--color-dodger-blue)); }
+.work-link svg { transition: transform .2s ease; }
+.work-card:hover .work-link svg { transform: translateX(4px); }
+
+/* =========================================================
+   Sticky mobile contact bar (conversion)
+   ========================================================= */
+.nhd-actionbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 950; display: flex; gap: .6rem;
+  padding: .6rem .8rem calc(.6rem + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--color-dodger-blue-darkest) 96%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 -8px 28px rgba(12,29,44,.34);
+  transform: translateY(130%); transition: transform .4s var(--ease-out);
+}
+.nhd-actionbar.show { transform: none; }
+.nhd-actionbar .btn { flex: 1; }
+@media (min-width: 768px) { .nhd-actionbar { display: none; } }
+@media (max-width: 767px) {
+  body.has-actionbar { padding-bottom: 4.5rem; }
+  .nhd-chat-launcher, [class*="chat-launcher"], [class*="chat__launcher"] { bottom: 5.25rem !important; }
+}
+
+/* =========================================================
+   Toast
+   ========================================================= */
+.nhd-toasts { position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 1300; display: flex; flex-direction: column; gap: .5rem; width: min(92vw, 24rem); }
+.nhd-toast { display: flex; align-items: center; gap: .65rem; background: var(--color-neutral-darkest); color: #fff; padding: .8rem 1rem; border-radius: 10px; box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(14px); transition: opacity .3s var(--ease-out), transform .3s var(--ease-out); }
+.nhd-toast.show { opacity: 1; transform: none; }
+.nhd-toast__i { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; flex: none; background: var(--color-dodger-blue); color: #fff; }
+.nhd-toast__i svg { width: 1rem; height: 1rem; }
+
+/* =========================================================
+   Reduced motion — disable all of the above gracefully
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .js-enhanced .hero h1, .js-enhanced .hero .sub, .js-enhanced .hero .actions, .js-enhanced .hero-visual,
+  .js-enhanced .hero-visual :is(.bb-bar, .bb-cta, .bb-img-block) { animation: none; opacity: 1; transform: none; }
+  .js-enhanced .bp-art svg { clip-path: none; transition: none; }
+  .js-enhanced .bp-art::after { display: none; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none; }
+  .card:hover, .btn:not(.link):hover { transform: none; }
+}

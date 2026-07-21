@@ -497,3 +497,130 @@
     close();
   });
 })();
+
+/* ============================================================
+   ENHANCEMENTS — motion, blueprint self-draw, count-ups,
+   condensing navbar, sticky contact bar, toast.
+   Progressive + reduced-motion aware. (North Harbor Digital)
+============================================================ */
+(() => {
+  'use strict';
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!REDUCE) document.documentElement.classList.add('js-enhanced');
+
+  /* ---- Condensing navbar ---- */
+  (function navCondense(){
+    const nav = document.querySelector('.navbar');
+    if (!nav) return;
+    const on = () => nav.classList.toggle('is-scrolled', window.scrollY > 20);
+    on(); addEventListener('scroll', on, { passive: true });
+  })();
+
+  /* ---- Blueprint art self-draw (on scroll into view) ---- */
+  (function artDraw(){
+    if (REDUCE || !('IntersectionObserver' in window)) return;
+    const arts = document.querySelectorAll('.bp-art');
+    if (!arts.length) return;
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) { e.target.classList.add('art-drawn'); io.unobserve(e.target); } });
+    }, { threshold: 0.25 });
+    arts.forEach(a => io.observe(a));
+  })();
+
+  /* ---- Scroll reveal (staggered) ---- */
+  (function reveal(){
+    if (REDUCE || !('IntersectionObserver' in window)) return;
+    const sels = ['.section-head', '.card', '.pricing-card', '.benefits-text',
+      '.benefit-item', '.work-card', '.stat', '.cta .container > *', '.contact-grid > *'];
+    const set = new Set();
+    sels.forEach(s => document.querySelectorAll(s).forEach(el => {
+      if (el.closest('.hero')) return;            // hero has its own entrance
+      set.add(el);
+    }));
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) { e.target.classList.add('reveal--in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    set.forEach(el => {
+      el.classList.add('reveal');
+      const i = el.parentElement ? [].indexOf.call(el.parentElement.children, el) : 0;
+      el.style.transitionDelay = Math.min(i, 5) * 70 + 'ms';
+      io.observe(el);
+    });
+  })();
+
+  /* ---- Count-ups (HTML [data-countup] + the SVG chart stats) ---- */
+  function countTo(el, to, dec, suffix, prefix) {
+    if (REDUCE) { el.textContent = prefix + to.toFixed(dec) + suffix; return; }
+    let start = null; const dur = 1500;
+    function tick(ts){
+      if (start === null) start = ts;
+      const p = Math.min((ts - start) / dur, 1);
+      const v = to * (1 - Math.pow(1 - p, 3));
+      el.textContent = prefix + v.toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(tick); else el.textContent = prefix + to.toFixed(dec) + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+  (function countUps(){
+    const targets = [];
+    // Generic HTML opt-in
+    document.querySelectorAll('[data-countup]').forEach(el => targets.push({
+      el, to: parseFloat(el.dataset.to || '0'), dec: parseInt(el.dataset.decimals || '0', 10),
+      suffix: el.dataset.suffix || '', prefix: el.dataset.prefix || ''
+    }));
+    // The blueprint dashboard stats live as SVG <text> — animate them too.
+    // art.js injects the SVG on load; wait a tick, then match by content.
+    setTimeout(() => {
+      document.querySelectorAll('[data-art="chart"] text').forEach(t => {
+        const s = (t.textContent || '').trim();
+        let m;
+        if ((m = s.match(/^([\d.]+)%$/)))        targets.push({ el: t, to: +m[1], dec: 1, suffix: '%', prefix: '' });
+        else if ((m = s.match(/^([\d.]+)ms$/)))  targets.push({ el: t, to: +m[1], dec: 0, suffix: 'ms', prefix: '' });
+        else if ((m = s.match(/^([\d.]+)k$/)))   targets.push({ el: t, to: +m[1], dec: 1, suffix: 'k', prefix: '' });
+      });
+      if (!('IntersectionObserver' in window)) { targets.forEach(t => countTo(t.el, t.to, t.dec, t.suffix, t.prefix)); return; }
+      const io = new IntersectionObserver((ents) => {
+        ents.forEach(e => {
+          if (!e.isIntersecting) return;
+          const t = targets.find(x => x.el === e.target);
+          if (t) countTo(t.el, t.to, t.dec, t.suffix, t.prefix);
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.6 });
+      targets.forEach(t => io.observe(t.el));
+    }, 60);
+  })();
+
+  /* ---- Sticky mobile contact action bar ---- */
+  (function actionBar(){
+    if (document.querySelector('.nhd-actionbar')) return;
+    document.body.classList.add('has-actionbar');
+    const bar = document.createElement('div');
+    bar.className = 'nhd-actionbar';
+    bar.setAttribute('aria-label', 'Quick contact');
+    bar.innerHTML =
+      '<a class="btn" href="#contact">Start a project</a>' +
+      '<a class="btn secondary" href="tel:+15165551234" style="border-color:rgba(255,255,255,.5);color:#fff;">Call</a>';
+    // Point "Call" at the site's real tel: link if one exists on the page.
+    const tel = document.querySelector('a[href^="tel:"]');
+    if (tel) bar.querySelector('a.secondary').setAttribute('href', tel.getAttribute('href'));
+    else bar.querySelector('a.secondary').remove();
+    document.body.appendChild(bar);
+    const show = () => bar.classList.toggle('show', window.scrollY > 320);
+    show(); addEventListener('scroll', show, { passive: true });
+  })();
+
+  /* ---- Toast on contact form submit (non-blocking) ---- */
+  (function formToast(){
+    function stack(){ let s = document.querySelector('.nhd-toasts'); if (!s){ s = document.createElement('div'); s.className='nhd-toasts'; s.setAttribute('aria-live','polite'); document.body.appendChild(s);} return s; }
+    function toast(msg){
+      const t = document.createElement('div'); t.className='nhd-toast'; t.setAttribute('role','status');
+      t.innerHTML = '<span class="nhd-toast__i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span>'+msg+'</span>';
+      stack().appendChild(t); requestAnimationFrame(()=>t.classList.add('show'));
+      setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(), 350); }, 3400);
+    }
+    document.querySelectorAll('form[data-netlify], form[data-contact-form], form[name]').forEach(f => {
+      f.addEventListener('submit', () => toast("Thanks — your message is on its way. We'll be in touch shortly."));
+    });
+  })();
+})();
