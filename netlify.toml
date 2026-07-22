@@ -28,7 +28,57 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), camera=(), microphone=()"
 
-# Pretty URLs — let visitors hit /services instead of /services.html
+# Canonical URLs — 301 the .html version to the clean path.
+# force = true is required so the redirect wins over the existing static .html file.
+[[redirects]]
+  from = "/services.html"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/hosting.html"
+  to = "/hosting"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/social.html"
+  to = "/social"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/checklist.html"
+  to = "/checklist"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/privacy.html"
+  to = "/privacy"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/terms.html"
+  to = "/terms"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cookies.html"
+  to = "/cookies"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/thank-you.html"
+  to = "/thank-you"
+  status = 301
+  force = true
+
+# Pretty URLs — serve the .html file behind each clean path (internal 200, no redirect).
 [[redirects]]
   from = "/services"
   to = "/services.html"
@@ -47,6 +97,26 @@
 [[redirects]]
   from = "/checklist"
   to = "/checklist.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/cookies"
+  to = "/cookies.html"
+  status = 200
+
+[[redirects]]
+  from = "/thank-you"
+  to = "/thank-you.html"
   status = 200
 
 # Catch-all 404 — explicitly serve 404.html for any unmatched path
